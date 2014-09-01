@@ -60,7 +60,13 @@ function processInput(i) {
 		return;
 	}
 
-	sendCommand(i[0], i[1]);
+	try {
+		sendCommand(i[0], i[1]);
+	}
+	catch (exc) {
+		console.error("Error when trying to send command: " + exc);
+		process.exit();
+	}
 }
 
 function sendCommand(cmd, len) {
