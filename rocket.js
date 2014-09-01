@@ -37,8 +37,8 @@ var cmds = {
 
 function exit () {
 	console.log("exiting");
-	rocket.write([cmds.open, cmds.stop]);
-	rocket.write([cmds.led, cmds.ledOff]); // turn led off
+	rocket.write([cmds.open, cmds.stop, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]]);
+	rocket.write([cmds.led, cmds.ledOff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]]); // turn led off
 	rocket.close();
 	process.exit();
 }
@@ -109,4 +109,4 @@ process.stdin.on('data', function(d) {
 	processInput(data);
 });
 
-rocket.write([cmds.led, cmds.ledOn]);
+rocket.write([cmds.led, cmds.ledOn, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]]);
