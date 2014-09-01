@@ -23,7 +23,7 @@ rocket.on('error', function (err) {
 });
 
 var cmds = {
-	stop: 0x00,
+	stop: 0x20,
 	open: 0x02,
 	up: 0x02,
 	down: 0x03,
@@ -89,9 +89,9 @@ function sayHi(cb) {
 
 function sendCommand(cmd, len, cb) {
 	console.log("Sending command", cmd, len);
-	rocket.write([cmds.open, cmds[cmd]]);
+	rocket.write([cmds.open, cmds[cmd], 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]);
 	setTimeout(function() {
-		rocket.write([cmds.open, cmds.stop]);
+		rocket.write([cmds.open, cmds.stop, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]);
 		if(cb) {
 			cb();
 		}

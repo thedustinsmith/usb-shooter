@@ -12,18 +12,18 @@ if(vendor.length === 0) {
 }
 var rocket = new hid.HID(vendor[0].path);
 rocket.on('data', function (d) {
-	console.log(d);
+	console.log('data: ' + d);
 });
 rocket.on('error', function (err) {
-	console.log(err);
+	console.log('error: ' + err);
 });
 
 var cmd = 0x10;
-var len = 3000;
+var len = 3500;
 
-rocket.write([0x02, cmd]);
+rocket.write([0x02, cmd, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]);
 setTimeout(function () {
-	rocket.write([0x02, 0x00]);
+	rocket.write([0x02, 0x20, 0x0, 0x0, 0x0, 0x0, 0x0]);
 	rocket.close();
 }, len);
 
