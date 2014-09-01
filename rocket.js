@@ -16,6 +16,11 @@ rocket.on('data', function (d) {
 	console.log("got data:");
 	console.log(d);
 });
+rocket.on('error', function (err) {
+	console.log("device error: " + err);
+	rocket.close();
+	process.exit();
+});
 
 var cmds = {
 	stop: 0x00,
