@@ -1,7 +1,16 @@
 var hid = require('node-hid');
 var devices = hid.devices();
+var vendorId = 8483;
+var productId = 4112;
 
-var rocket = new hid.HID('USB_2123_1010_14500000');
+var vendor = devices.filter(function (d) {
+	return d.vendorId === vendorId && d.productId == productId;
+});
+if(vendor.length === 0) {
+	console.error("No Missile Launchers Detected");
+	process.exit(1);
+}
+var rocket = new hid.HID(vendor[0].path);
 
 rocket.on('data', function (d) {
 	console.log("got data:");
