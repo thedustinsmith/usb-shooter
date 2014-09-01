@@ -18,12 +18,12 @@ rocket.on('data', function (d) {
 });
 
 var cmds = {
-	open: 0x02,
-	up: 0x06,
-	down: 0x07,
-	right: 0x08,
-	left: 0x04,
 	stop: 0x00,
+	open: 0x02,
+	up: 0x02,
+	down: 0x03,
+	left: 0x04,
+	right: 0x08,
 	fire: 0x10,
 	led: 0x03,
 	ledOn: 0x01,
@@ -69,17 +69,34 @@ function processInput(i) {
 	}
 }
 
-function sendCommand(cmd, len) {
+function sayHi(cb) {
+	sendCommand('up', 1500, function () {
+		sendCommand('down', 500);
+	});
+	// sendCommand('left', 7000, function() {
+	// 	sendCommand('right', 3250, function() {
+	// 		sendCommand('up', 1500, function() {
+	// 			sendCommand('down', 500);
+	// 		});
+	// 	});
+	// });
+}
+
+function sendCommand(cmd, len, cb) {
+	console.log("Sending command", cmd, len);
 	rocket.write([cmds.open, cmds[cmd]]);
 	setTimeout(function() {
-		console.log('stopping');
 		rocket.write([cmds.open, cmds.stop]);
+		if(cb) {
+			cb();
+		}
 	}, len);
 }
 
 // handling Ctrl + C
 process.on('SIGINT', exit);
 
+sayHi();
 console.log("Welcome to the fire fighter.  Please enter your command:");
 process.stdin.resume();
 process.stdin.on('data', function(d) {
@@ -88,24 +105,3 @@ process.stdin.on('data', function(d) {
 });
 
 rocket.write([cmds.led, cmds.ledOn]);
-
-//rocket.write([0x02, 0x05]); //left & down
-//rocket.write([0x02, 0x06]); // up
-//rocket.write([0x02, 0x07]); // down
-//rocket.write([0x02, 0x08]); // right
-//rocket.write([0x02, 0x10]); // shoot
-//rocket.write([0x02, 0x11]); // fire
-//rocket.write([0x02, 0x12]); // up and fire
-//rocket.write([0x02, 0x13]); // down and fire
-//rocket.write([0x02, 0x14]); // fire
-//rocket.write([0x02, 0x15]); // fire
-//rocket.write([0x02, 0x16]); // up and fire
-//rocket.write([0x02, 0x17]); // down and fire
-//rocket.write([0x02, 0x18]); // right down and fire
-//rocket.write([0x02, 0x19]); // down and fire
-//rocket.write([0x02, 0x1a]); // right up and fire
-//rocket.write([0x02, 0x1b]); // right down and fire ?
-//rocket.write([0x02, 0x1c]); // left down and fire ?
-//rocket.write([0x02, 0x1d]); // same as above/
-//rocket.write([0x02, 0x1e]); // left up and fire
-//rocket.write([0x02, 0x1f]); // left down and fire

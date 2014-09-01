@@ -1,14 +1,50 @@
-var usb = require('usb');
-var list = usb.getDeviceList();
+var hid = require('node-hid');
+var devices = hid.devices();
+var vendorId = 8483;
+var productId = 4112;
 
-console.log(list);
-console.log('===========');
-var rocket = usb.findByIds(8483,4112);
+var vendor = devices.filter(function (d) {
+	return d.vendorId === vendorId && d.productId == productId;
+});
+if(vendor.length === 0) {
+	console.error("No Missile Launchers Detected");
+	process.exit(1);
+}
+var rocket = new hid.HID(vendor[0].path);
+rocket.on('data', function (d) {
+	console.log(d);
+});
+rocket.on('error', function (err) {
+	console.log(err);
+});
 
-rocket.open();
+var cmd = 0x10;
+var len = 3000;
 
-var rocketInt = rocket.interfaces[0];
-var endPoint = rocketInt.endpoints[1];
+rocket.write([0x02, cmd]);
+setTimeout(function () {
+	rocket.write([0x02, 0x00]);
+	rocket.close();
+}, len);
 
-console.log(rocketInt.endpoints.length);
-rocket.close();
+// todo these need updating
+//rocket.write([0x02, 0x05]); //left & down
+//rocket.write([0x02, 0x06]); // left & up
+//rocket.write([0x02, 0x07]); // down & down
+//rocket.write([0x02, 0x08]); // right
+//rocket.write([0x02, 0x10]); // shoot
+//rocket.write([0x02, 0x11]); // fire
+//rocket.write([0x02, 0x12]); // up and fire
+//rocket.write([0x02, 0x13]); // down and fire
+//rocket.write([0x02, 0x14]); // fire
+//rocket.write([0x02, 0x15]); // fire
+//rocket.write([0x02, 0x16]); // up and fire
+//rocket.write([0x02, 0x17]); // down and fire
+//rocket.write([0x02, 0x18]); // right down and fire
+//rocket.write([0x02, 0x19]); // down and fire
+//rocket.write([0x02, 0x1a]); // right up and fire
+//rocket.write([0x02, 0x1b]); // right down and fire ?
+//rocket.write([0x02, 0x1c]); // left down and fire ?
+//rocket.write([0x02, 0x1d]); // same as above/
+//rocket.write([0x02, 0x1e]); // left up and fire
+//rocket.write([0x02, 0x1f]); // left down and fire
